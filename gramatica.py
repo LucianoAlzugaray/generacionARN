@@ -1,11 +1,12 @@
 import sys
 import numpy as np
+import controlador
 
 ###########################################################################################e
 class GLC:
 
-	def __init__(self, nombre, start, alfabetoNoTerminales):
-		self.producciones = []
+	def __init__(self, nombre, start, alfabetoNoTerminales, produccionesIniciales = []):
+		self.producciones = produccionesIniciales
 		self.nombre = nombre
 		self.start = start
 		self.producciones.append(start)
@@ -52,11 +53,15 @@ class Produccion:
 class Derivador:
 
 	def derivar(self,gramatica):
-		palabra = self.derivarPalabra(gramatica, gramatica.start, gramatica.start.noTerminal)
+		controlador = Controlador()
+		arbol = controlador.inicializarArbol(gramatica.start.noTerminal,)
+		palabra = self.derivarPalabra(gramatica, gramatica.start, gramatica.start.noTerminal, arbol)
+		arbol.render('img/' + palabra)
 		return palabra
 
-	def derivarPalabra(self,gramatica, derivacion, palabra):
+	def derivarPalabra(self,gramatica, derivacion, palabra, arbol):
 		derivado = np.random.choice(derivacion.producciones, None, None, derivacion.probabilidades)
+		controlador.dibujarArbol(arbol,raiz)
 		palabra = palabra.replace(derivacion.noTerminal, derivado)
 		for caracter in palabra:
 			if caracter in gramatica.noTerminales:
