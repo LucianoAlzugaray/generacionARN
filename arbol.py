@@ -5,7 +5,7 @@ import graphviz as gv
 class Arbol:
 
 	def __init__(self, nombreRaiz):
-		self.arbol = gv.Graph()
+		self.arbol = gv.Graph(comment = "Arbol Generacion de ARN")
 		self.arbol.node("0", nombreRaiz)
 		
 		self.hojas = []
@@ -51,7 +51,11 @@ class Arbol:
 
 ##############################################################################################
 
-	def crearImagen(self, palabra):
-		ruta = './img/arbol' + palabra
+	def crearImagen(self):
+		ruta = './img/arbol'
+		palabra = ''
+		for hoja in self.hojas:
+			palabra = palabra + hoja['nombre']
+		print palabra
 		self.arbol.render(ruta)
 		

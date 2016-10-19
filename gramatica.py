@@ -54,29 +54,29 @@ class Derivador:
 
 	def derivar(self,gramatica):
 		arbol = tree.Arbol(gramatica.start.noTerminal)
-		palabra = self.derivarPalabra(gramatica, gramatica.start, gramatica.start.noTerminal, arbol)
-		arbol.crearImagen(palabra)
-		return palabra
-
-	def derivarPalabra(self, gramatica, derivacion, palabra, arbol):
-		derivado = np.random.choice(derivacion.producciones, None, None, derivacion.probabilidades)
-		print derivado
-		arbol.dibujarArbol(derivacion.noTerminal, derivado)
-		palabra = palabra.replace(derivacion.noTerminal, derivado)
-		for caracter in palabra:
-			if caracter in gramatica.noTerminales:
-				seEncontro = False
-				for i in gramatica.producciones:
-					if caracter == i.noTerminal:
-						seEncontro = True
-						palabra = self.derivarPalabra(gramatica, i, palabra, arbol)
-						break
-				if not seEncontro:
-					raise DerivacionException("Un no terminal no tiene derivacion explicita")
-				break
-		return palabra							
-
-	def derivarPalabra(self, gramatica, derivacion, palabra, arbol):
+		palabra = self.derivarPalabra(gramatica, gramatica.start, arbol)
+		arbol.crearImagen()
+		
+######
+#	def derivarPalabra(self, gramatica, derivacion, palabra, arbol):
+#		derivado = np.random.choice(derivacion.producciones, None, None, derivacion.probabilidades)
+#		print derivado
+#		arbol.dibujarArbol(derivacion.noTerminal, derivado)
+#		palabra = palabra.replace(derivacion.noTerminal, derivado)
+#		for caracter in palabra:
+#			if caracter in gramatica.noTerminales:
+#				seEncontro = False
+#				for i in gramatica.producciones:
+#					if caracter == i.noTerminal:
+#						seEncontro = True
+#						self.derivarPalabra(gramatica, i, arbol)
+#						break
+#				if not seEncontro:
+#					raise DerivacionException("Un no terminal no tiene derivacion explicita")
+#				break
+#		return palabra							
+#####################################
+	def derivarPalabra(self, gramatica, derivacion, arbol):
 		derivado = np.random.choice(derivacion.producciones, None, None, derivacion.probabilidades)
 		terminal = True
 		for caracter in derivado:
@@ -86,7 +86,7 @@ class Derivador:
 		arbol.dibujarArbol(derivacion.noTerminal, derivado)
 
 		if terminal:
-			return palabra.replace(derivacion.noTerminal, derivado)
+			return derivado.replace(derivacion.noTerminal, derivado)
 		else:
 			for caracter in derivado:
 				if caracter in gramatica.noTerminales:
@@ -94,9 +94,9 @@ class Derivador:
 					for i in gramatica.producciones:
 						if caracter == i.noTerminal:
 							seEncontro = True
-							palabra = palabra.replace(caracter, self.derivarPalabra(gramatica, i, caracter, arbol))
+							derivado = derivado.replace(caracter, self.derivarPalabra(gramatica, i,arbol))
 							break
 					if not seEncontro:
 						raise DerivacionException("Un no terminal no tiene derivacion explicita")
 		
-			return palabra							
+			return derivado							
