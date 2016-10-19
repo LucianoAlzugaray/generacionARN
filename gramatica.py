@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-import controlador
+import arbol as tree
 
 ###########################################################################################e
 class GLC:
@@ -43,7 +43,7 @@ class Produccion:
 		print self.producciones[len(self.producciones)-1]
 
 	def cambiarProbabilidades(self, probabilidades):
-		if eval('+'.join(probabilidades) == 1.0 and len(probabilidades) == len(producciones)):
+		if len(probabilidades) == len(self.producciones):
 			self.probabilidades = probabilidades
 		else:
 			raise ProduccionException("Las probabilidades tienen un error de definicion")
@@ -53,15 +53,15 @@ class Produccion:
 class Derivador:
 
 	def derivar(self,gramatica):
-		controlador = Controlador()
-		arbol = controlador.inicializarArbol(gramatica.start.noTerminal,)
+		arbol = tree.Arbol(gramatica.start.noTerminal)
 		palabra = self.derivarPalabra(gramatica, gramatica.start, gramatica.start.noTerminal, arbol)
-		arbol.render('img/' + palabra)
+		arbol.crearImagen(palabra)
 		return palabra
 
-	def derivarPalabra(self,gramatica, derivacion, palabra, arbol):
+	def derivarPalabra(self, gramatica, derivacion, palabra, arbol):
 		derivado = np.random.choice(derivacion.producciones, None, None, derivacion.probabilidades)
-		controlador.dibujarArbol(arbol,raiz)
+		print derivado
+		arbol.dibujarArbol(derivacion.noTerminal, derivado)
 		palabra = palabra.replace(derivacion.noTerminal, derivado)
 		for caracter in palabra:
 			if caracter in gramatica.noTerminales:
@@ -69,7 +69,7 @@ class Derivador:
 				for i in gramatica.producciones:
 					if caracter == i.noTerminal:
 						seEncontro = True
-						palabra = self.derivarPalabra(gramatica, i, palabra)
+						palabra = self.derivarPalabra(gramatica, i, palabra, arbol)
 				if not seEncontro:
 					raise DerivacionException("Un no terminal no tiene derivacion explicita")
 		return palabra							
