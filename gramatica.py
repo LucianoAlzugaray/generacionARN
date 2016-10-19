@@ -70,6 +70,33 @@ class Derivador:
 					if caracter == i.noTerminal:
 						seEncontro = True
 						palabra = self.derivarPalabra(gramatica, i, palabra, arbol)
+						break
 				if not seEncontro:
 					raise DerivacionException("Un no terminal no tiene derivacion explicita")
+				break
 		return palabra							
+
+	def derivarPalabra(self, gramatica, derivacion, palabra, arbol):
+		derivado = np.random.choice(derivacion.producciones, None, None, derivacion.probabilidades)
+		terminal = True
+		for caracter in derivado:
+			if caracter in gramatica.noTerminales:
+				terminal = False
+
+		arbol.dibujarArbol(derivacion.noTerminal, derivado)
+
+		if terminal:
+			return palabra.replace(derivacion.noTerminal, derivado)
+		else:
+			for caracter in derivado:
+				if caracter in gramatica.noTerminales:
+					seEncontro = False
+					for i in gramatica.producciones:
+						if caracter == i.noTerminal:
+							seEncontro = True
+							palabra = palabra.replace(caracter, self.derivarPalabra(gramatica, i, caracter, arbol))
+							break
+					if not seEncontro:
+						raise DerivacionException("Un no terminal no tiene derivacion explicita")
+		
+			return palabra							
